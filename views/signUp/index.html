@@ -20,19 +20,19 @@
                     <form id="signup" onsubmit="signUp(event)">
                         <h3 style="text-align: center;color: rgb(7, 94, 84)">Sign Up</h3>
                         <div class="form-floating mb-3">
-                            <input type="text" id="name" class="form-control" placeholder="placeholder" required>
+                            <input type="text" id="name" class="form-control" placeholder="placeholder" required autocomplete="username">
                             <label for="name">Name</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" id="email" class="form-control" placeholder="placeholder" required>
+                            <input type="text" id="email" name="email" class="form-control" placeholder="placeholder" required>
                             <label for="email" class="form-label">Email</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="number" id="mobilenumber" class="form-control" placeholder="placeholder" required>
+                            <input type="number" id="mobilenumber" name="mobilenumber" class="form-control" placeholder="placeholder" required>
                             <label for="mobilenumber" class="form-label">Mobile Number</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="password" id="password" class="form-control" placeholder="placeholder" required autocomplete="current-password">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="placeholder" required autocomplete="current-password">
                             <label for="password" class="form-label">Password</label>
                         </div>
                         <button class="form-control" style="background-color: rgb(7, 94, 84);color: white;"><strong>Sign Up</strong></button>
@@ -42,7 +42,7 @@
         </div>
     </div>
     
-    <script scr="index.js"></script>
-    <script scr="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+    <script src="index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 </body>
 </html>

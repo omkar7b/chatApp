@@ -19,11 +19,11 @@ const User = sequelize.define('users', {
         unique: true
     },
     mobileNumber: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         allowNull: false
     },
     password: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
     }
 });

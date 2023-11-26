@@ -1,18 +1,24 @@
-async function singUp(event) {
+async function signUp(event){
     try{
         event.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const mobileNumber = document.getElementById('mobilenumber').value;
+        const password = document.getElementById('password').value;
+        
+        
         const newUser = {
-            name: event.target.name.value,
-            email: event.target.email.value,
-            mobileNumber: event.target.mobileNumber.value,
-            password: event.target.password.value
+            name: name,
+            email:email,
+            mobileNumber: mobileNumber,
+            password: password
         };
     
         const response = await axios.post('http://localhost:3000/user/signup', newUser);
-        if(response.data.status === 201){
-            console.log('New User Created');
-        };
+        console.log(response.data.newUser);
+        alert('New User Created Successfully')
     } catch (error){
-        console.log(err);
+        console.log(error);
     }
 } 
