@@ -24,10 +24,6 @@ async function signUp(event){
 
 function showError(error) {
     const errorEle = document.getElementById('error');
-    
-    if (error.response && error.response.data && error.response.data.message) {
-        errorEle.innerHTML = error.response.data.message;
-    } else {
-        errorEle.innerHTML = 'An error occurred.';
-    }
+    errorEle.innerHTML = error.response.data.message;
 }
+
