@@ -10,15 +10,18 @@ async function logIn(event){
         password: password
     }
 
-    const response = await axios.post('http://localhost:3000/user/signup',user)
+    const response = await axios.post('http://localhost:3000/user/login',user);
+    console.log(response.data.message);
+    localStorage.setItem('token', response.data.token)
+    alert('User Logged in Successfully');
 
     } catch (error){
-        console.log(error);
+        console.log(error.response.data);
         showError(error);
-    }
-} 
+    };
+};
 
 function showError(error) {
 const errorEle = document.getElementById('error');
 errorEle.innerHTML = error.response.data.message;
-}
+};

@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 exports.signup =  async (req, res, next) => {
     try {
@@ -36,3 +38,36 @@ exports.signup =  async (req, res, next) => {
     }   
 }
 
+function generateAccessToken(id, name){
+    return jwt.sign({userId: id, name: name}, process.env.SECRET_KEY)
+}
+
+exports.login = async (req, res, next) => {
+    try {
+        const {email, password} = req.body;
+        const userExist = await User.findAll({where: {email: email}});
+
+        if(userExist.length>0){
+            bcrypt.compare(password, userExist[0].password, (err, result) => {
+                if(err){
+                    console.log('err at bcrypt', err);
+                }
+                else if(result===true){
+                    res.status(200).json({success:true, message:'User Logged in successfully', token: generateAccessToken(userExist[0].id, userExist[0].name)});
+                }
+                else {
+                    res.status(401).json({success:false, message:'User Not Authorized'});
+                };
+            });
+        } else {
+            throw new Error('User Not Found')
+        };
+    } catch (error) {
+        if (error.message === 'User Not Found') {
+            return res.status(404).json({success: false, message: 'User Not Found'});
+        } else {
+            console.error(error);
+            return res.status(500).json({success: false, message: 'Internal Server Error'});
+        };
+    };
+};
