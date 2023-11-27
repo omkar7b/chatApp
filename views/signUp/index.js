@@ -7,7 +7,6 @@ async function signUp(event){
         const mobileNumber = document.getElementById('mobilenumber').value;
         const password = document.getElementById('password').value;
         
-        
         const newUser = {
             name: name,
             email:email,
@@ -17,8 +16,18 @@ async function signUp(event){
     
         const response = await axios.post('http://localhost:3000/user/signup', newUser);
         console.log(response.data.newUser);
-        alert('New User Created Successfully')
+        alert('Successfully signed up')
     } catch (error){
-        console.log(error);
+        showError(error);
     }
 } 
+
+function showError(error) {
+    const errorEle = document.getElementById('error');
+    
+    if (error.response && error.response.data && error.response.data.message) {
+        errorEle.innerHTML = error.response.data.message;
+    } else {
+        errorEle.innerHTML = 'An error occurred.';
+    }
+}
