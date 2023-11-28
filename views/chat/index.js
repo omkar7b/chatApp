@@ -14,17 +14,25 @@ document.getElementById('send').addEventListener('click', async () => {
 });
 
 window.addEventListener('DOMContentLoaded', async () => {
+    getMessage();
+});
+
+async function getMessage(){
     try {
         const response = await axios.get(`${baseUrl}/message/getmessage`, { headers: { "Authorization": token } });
         const messages = response.data.message;
-
+        document.getElementById('chat').innerHTML = '';
+    
         messages.forEach(msg => {
             showMessageOnScreen(msg);
         });
     } catch (err) {
         console.log('Error while fetching the data', err);
+    } finally {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await getMessage();
     }
-});
+}
 
 function showMessageOnScreen(message) {
     let parentEle = document.getElementById('chat');
