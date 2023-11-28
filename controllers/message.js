@@ -10,12 +10,22 @@ exports.sendMessage = async (req, res, next) =>  {
           }
         const newMessage = await  Message.create({
             message: message,
-            userId : req.user.id
+            userId : req.user.id,
+            name: req.user.name
         });
-        res.status(201).json({success: true, message: 'Message Sent SuccessFully'});
+        res.status(201).json({success: true, newMessage});
     } catch (err) {
         console.log('Error at sendMessage Controller', err);
         res.status(500).json({success:false, error:err})
     }
 };
 
+exports.getMessage = async (req, res, next) => {
+    try {
+        const messages = await Message.findAll();
+        console.log(messages);
+        res.status(201).json({message: messages});
+    } catch (err) {
+        res.status(500).json({err: err, success: false});
+    };
+};
