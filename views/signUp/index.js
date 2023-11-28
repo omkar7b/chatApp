@@ -1,3 +1,5 @@
+const baseUrl = 'http://localhost:3000';
+
 async function signUp(event){
     try{
         event.preventDefault();
@@ -14,7 +16,7 @@ async function signUp(event){
             password: password
         };
     
-        const response = await axios.post('http://localhost:3000/user/signup', newUser);
+        const response = await axios.post(`${baseUrl}/user/signup`, newUser);
         console.log(response.data.newUser);
         alert('Successfully Signed Up');
         window.location.href = '../logIn/index.html';

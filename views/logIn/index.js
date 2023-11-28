@@ -1,3 +1,5 @@
+const baseUrl = 'http://localhost:3000';
+
 async function logIn(event){
     try {
         event.preventDefault();
@@ -10,10 +12,11 @@ async function logIn(event){
         password: password
     }
 
-    const response = await axios.post('http://localhost:3000/user/login',user);
+    const response = await axios.post(`${baseUrl}/user/login`,user);
     console.log(response.data.message);
     localStorage.setItem('token', response.data.token)
     alert('User Logged in Successfully');
+    window.location.href = '../chat/index.html';
 
     } catch (error){
         console.log(error.response.data);
