@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const Usergroup = require('../models/usergroup');
 
 const authentication = async (req, res, next) => {
     try {
@@ -19,3 +20,5 @@ const authentication = async (req, res, next) => {
 module.exports = {
     authentication
 };
+
+

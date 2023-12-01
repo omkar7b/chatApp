@@ -3,26 +3,37 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
 
-const User = require('./models/user');
-const Message = require('./models/message');
-const sequelize = require('./util/database');
-
-const userRoutes = require('./routes/user');
-const messageRoutes = require('./routes/message');
-
 const app = express();
-
 app.use(bodyParser.json({extended: false}));
 app.use(cors({
     origin: 'http://127.0.0.1:5500',
     methods: ['POST', 'GET', 'PUT', 'DELETE'],
 }));
 
+
+const userRoutes = require('./routes/user');
+const messageRoutes = require('./routes/message');
+const groupRoutes = require('./routes/group');
+
+const  User = require('./models/user');
+const Usergroup = require('./models/usergroup');
+const Message = require('./models/message');
+const Group = require('./models/group');
+const sequelize = require('./util/database');
+
+
 app.use('/user',userRoutes);
 app.use('/message', messageRoutes);
+app.use('/group', groupRoutes);
 
 User.hasMany(Message);
 Message.belongsTo(User);
+
+User.belongsToMany(Group, { through: Usergroup });
+Group.belongsToMany(User, { through: Usergroup });
+
+Group.hasMany(Message);
+Message.belongsTo(Group);
 
 sequelize.sync()
 .then(() => {
