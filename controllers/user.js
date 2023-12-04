@@ -72,3 +72,21 @@ exports.login = async (req, res, next) => {
         };
     };
 };
+
+exports.getAllUsers = async (req, res) => {
+    try {
+
+        const users = await User.findAll({
+            attributes: ['id', 'name', 'email']
+        });
+
+        const userGroups = await Usergroup.findAll({
+            attributes: ['userId', 'groupId']
+        })
+
+        res.status(200).json({ user: users, userGroup: userGroups })
+    }
+    catch (error) {
+        res.status(500).json({ err: error, message: 'Error occured at getAllUsers' })
+    }
+}

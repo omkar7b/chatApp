@@ -7,7 +7,6 @@ const Message = sequelize.define('messages', {
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
-        unique: true 
     },
     message: {
         type: Sequelize.STRING,

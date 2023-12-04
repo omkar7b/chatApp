@@ -4,6 +4,7 @@ const Usergroup = require('../models/usergroup');
 
 const authentication = async (req, res, next) => {
     try {
+        console.log('Authentication middleware called');
     const token = req.header('Authorization');
     console.log(token);
     const decode = jwt.verify(token, process.env.SECRET_KEY);

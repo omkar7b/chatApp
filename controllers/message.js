@@ -1,6 +1,7 @@
 const Message = require('../models/message');
 const User = require('../models/user');
 const { Op } = require('sequelize');
+const Usergroup = require('../models/usergroup');
 
 exports.sendMessage = async (req, res, next) =>  {
     try {
@@ -27,24 +28,35 @@ exports.sendMessage = async (req, res, next) =>  {
 
 exports.getMessage = async (req, res, next) => {
     try {
-        const lastRetrievedTimestamp = req.headers['last-retrieved-timestamp'] || 0;
-        const userId = req.query.id; // Corrected: Use req.query.userId to get userId from query parameters
+        const lastRetrievedTimestamp = req.query.lastretrievedtimestamp || 0;
+        const userId = req.query.id; 
         const groupId = req.query.groupId;
 
         console.log('userId:', userId);
         console.log('groupId:', groupId);
-
-        const messages = await Message.findAll({
-            where: {
-                userId: userId,
+        if (groupId === undefined) {
+            return res.status(400).json({ success: false, error: 'groupId is undefined' });
+        }
+        const userGroup = await Usergroup.findAll({
+            where:{
                 groupId: groupId,
-                createdAt: {
-                    [Op.gt]: new Date(lastRetrievedTimestamp),
-                },
-            },
-        });
+                userId: req.user.id
+            }
+        })
 
+        if(userGroup.length>0){
+            const messages = await Message.findAll({
+                where: {
+                    groupId: groupId,
+                    createdAt: {
+                       [Op.gt]: lastRetrievedTimestamp,
+                   },
+                },
+            });
+            console.log('Generated Sequelize Query:', messages);
         res.status(200).json({ messages: messages });
+        }
+        
     } catch (err) {
         console.error('Error while fetching messages:', err);
         res.status(500).json({ error: 'Internal Server Error', details: err.message });

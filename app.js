@@ -18,7 +18,7 @@ const groupRoutes = require('./routes/group');
 const  User = require('./models/user');
 const Usergroup = require('./models/usergroup');
 const Message = require('./models/message');
-const Group = require('./models/group');
+const {Group, Admin} = require('./models/group');
 const sequelize = require('./util/database');
 
 
@@ -34,6 +34,11 @@ Group.belongsToMany(User, { through: Usergroup });
 
 Group.hasMany(Message);
 Message.belongsTo(Group);
+
+User.hasMany(Admin);
+Admin.belongsTo(User);
+Group.hasMany(Admin);
+Admin.belongsTo(Group);
 
 sequelize.sync()
 .then(() => {
