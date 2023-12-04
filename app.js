@@ -40,6 +40,7 @@ Admin.belongsTo(User);
 Group.hasMany(Admin);
 Admin.belongsTo(Group);
 
+//force:true
 sequelize.sync({force:true})
 .then(() => {
     app.listen(3000);
