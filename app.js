@@ -2,11 +2,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
+const socketIo = require('socket.io');
+const http = require('http');
+const path =require('path');
+
 
 const app = express();
+
+const server = http.createServer(app);
+const io = socketIo(server);
+
+
 app.use(bodyParser.json({extended: false}));
 app.use(cors({
-    origin: 'http://127.0.0.1:5500',
+    origin: ['http://localhost:3000','http://127.0.0.1:5500'],
     methods: ['POST', 'GET', 'PUT', 'DELETE'],
 }));
 
@@ -40,12 +49,42 @@ Admin.belongsTo(User);
 Group.hasMany(Admin);
 Admin.belongsTo(Group);
 
-//force:true
-sequelize.sync({force:true})
+app.use(express.static(path.join(__dirname, 'views')));
+
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, `${req.url}`));
+})
+
+io.on('connection', socket => { 
+
+    socket.on('send-message', (message) => {
+        io.emit('receive-message', message);
+    });
+
+    socket.on('userAdded', () => {
+        io.emit('userAdded');
+    })
+
+    socket.on('userRemoved', () => {
+        io.emit('userRemoved');
+    })
+
+    socket.on('adminAdded', () => {
+        io.emit('adminAdded');
+    })
+
+    socket.on('adminRemoved', () => {
+        io.emit('adminRemoved');
+    })
+});
+
+
+sequelize.sync()
 .then(() => {
-    app.listen(3000);
+    server.listen(3000);
     console.log('Server is running on port 3000');
 })
 .catch((err) => {
     console.log(err);
 })
+

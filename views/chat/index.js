@@ -1,6 +1,9 @@
 const token = localStorage.getItem('token');
 const baseUrl = 'http://localhost:3000';
 
+const socket = io(baseUrl);
+const decodedToken = parseJwt(token);
+
 document.getElementById('send').addEventListener('click', async () => {
     try {
         const message = document.getElementById('msg').value;
@@ -9,7 +12,9 @@ document.getElementById('send').addEventListener('click', async () => {
         console.log('Message:', message);
         const response = await axios.post(`${baseUrl}/message/sendmessage/${groupId}`, { message }, { headers: { "Authorization": token } });
         const newMessage = response.data.newMessage;
-            showMessageOnScreen(newMessage);
+        console.log(response.data.newMessage);
+       // showMessageOnScreen(newMessage);
+        socket.emit('send-message', {message, name:decodedToken.name})
             document.getElementById('msg').value=' ';
                 
     } catch (err) {
@@ -17,11 +22,13 @@ document.getElementById('send').addEventListener('click', async () => {
     }
 });
 
+socket.on('receive-message', message => {
+    showMessageOnScreen(message);
+})
 
 
 window.addEventListener('DOMContentLoaded', async () => {
-    //localStorage.setItem('chats', JSON.stringify([]));
-    getMessages(); // Call fetchNewMessages on page load
+    getMessages(); 
     getGroups();
 });
 
