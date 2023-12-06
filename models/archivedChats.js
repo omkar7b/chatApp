@@ -12,3 +12,4 @@ const Archivedchats = sequelize.define('archivedchats', {
 })
 
 module.exports = Archivedchats;
+//
