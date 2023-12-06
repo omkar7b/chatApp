@@ -6,6 +6,8 @@ const socketIo = require('socket.io');
 const http = require('http');
 const path =require('path');
 const fileUpload = require('express-fileupload');
+const cron = require('node-cron');
+const { Op } = require('sequelize');
 
 
 const app = express();
@@ -32,6 +34,7 @@ const Usergroup = require('./models/usergroup');
 const Message = require('./models/message');
 const {Group, Admin} = require('./models/group');
 const sequelize = require('./util/database');
+const Archivedchats = require('./models/archivedChats');
 
 
 app.use('/user',userRoutes);
@@ -91,3 +94,19 @@ sequelize.sync()
     console.log(err);
 })
 
+cron.schedule('* * * * *', function () {
+    console.log('CRON running after every 1 minute');
+    const currDate = new Date();
+
+    const checkDate = `${currDate.getFullYear()}-${(currDate.getMonth() + 1).toString().padStart(2, '0')}-${(currDate.getDate()).toString().padStart(2, '0')}`;
+
+    console.log('checkDate', checkDate);
+    Message.findAll({ where: { createdAt: { [Op.lt]: checkDate } } })
+        .then((allChats) => {
+            allChats.forEach((chat) => {
+                Archivedchats.create(chat.toJSON());
+                chat.destroy();
+            })
+        })
+        .catch(err => console.log('err at cron', err))
+})
