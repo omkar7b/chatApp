@@ -5,6 +5,7 @@ require('dotenv').config();
 const socketIo = require('socket.io');
 const http = require('http');
 const path =require('path');
+const fileUpload = require('express-fileupload');
 
 
 const app = express();
@@ -13,7 +14,9 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 
-app.use(bodyParser.json({extended: false}));
+app.use(bodyParser.json({extended: true}));
+app.use(fileUpload());
+
 app.use(cors({
     origin: ['http://localhost:3000','http://127.0.0.1:5500'],
     methods: ['POST', 'GET', 'PUT', 'DELETE'],

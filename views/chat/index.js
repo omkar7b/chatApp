@@ -8,12 +8,27 @@ document.getElementById('send').addEventListener('click', async () => {
     try {
         const message = document.getElementById('msg').value;
         const groupId = localStorage.getItem('currGroup')
-        console.log(groupId);
-        console.log('Message:', message);
+        console.log(message);
+       if (!message && !document.getElementById('mediaInput').files[0]) {
+        return;
+        }
+
+    if (document.getElementById('mediaInput').files[0]) {
+        const mediaFile = document.getElementById('mediaInput').files[0];
+        console.log(mediaFile);
+        const mediaType = mediaFile.type;
+        const formData = new FormData();
+        formData.append('media', mediaFile);
+        formData.append('mediaType', mediaType);
+        console.log('mediaFile>>>>>', formData)
+
+        await axios.post(`${baseUrl}/message/mediasharing/${groupId}`, formData, {
+            headers: { "Authorization": token, "Content-Type": 'multipart/form-data' }
+        })
+    }
+    if (message) {
         const response = await axios.post(`${baseUrl}/message/sendmessage/${groupId}`, { message }, { headers: { "Authorization": token } });
-        const newMessage = response.data.newMessage;
-        console.log(response.data.newMessage);
-       // showMessageOnScreen(newMessage);
+    }
         socket.emit('send-message', {message, name:decodedToken.name})
             document.getElementById('msg').value=' ';
                 
@@ -103,10 +118,13 @@ function showMessageOnScreen(messages) {
             messageContainer.style.textAlign = 'right'; 
             messageContainer.style.marginLeft = 'auto'; 
             messageContainer.innerHTML = `You : ${msg.message}`;
-        } else {
+        } else if(msg.name!== currentUser) {
             messageContainer.classList.add('other-message'); 
             messageContainer.style.backgroundColor = '#033D39';
             messageContainer.innerHTML = `${msg.name} : ${msg.message}`;
+        } else {
+            mediaContainer.classList.add('other-message');
+            mediaContainer.innerHTML = `${message.name} : <img src="${message.mediaUrl}" alt="Media" style="max-width: 100%;"/>`;
         }
 
        messageContainer.style.width = `${messageContainer.textContent.length * 10}px`;
